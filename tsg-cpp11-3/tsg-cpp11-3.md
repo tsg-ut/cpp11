@@ -27,7 +27,7 @@ int func (int arg) {
 }
 ```
 
-## static_assert
+## static_assert (宣言式)
 
 従来のassertの静的なやつ。コンパイル時に実行して括弧内が偽ならエラーを吐いてくれる。
 
@@ -54,3 +54,26 @@ test.cpp: In function 'int main()':
 test.cpp:9:2: error: static assertion failed: x overflows... :(
   static_assert(std::numeric_limits<decltype(x)>::max() > MAX_X, "x overflows... :(");
 ```
+
+## thread_local (指定子)
+
+マルチスレッド環境においてスレッドごとに一意な値を保持するらしい。マルチスレッドよくわからない。
+
+```C++
+#include <iostream>
+#include <thread>
+
+thread_local double pi = 3;
+
+void correct_pi() { pi = 3.14; }
+
+int main() {
+  std::thread thread(correct_pi);
+  thread.join(); // wait until thread terminate
+
+  std::cout << "pi is " << pi << std::endl; // -> pi is 3
+  return 0;
+}
+```
+
+##
