@@ -15,7 +15,7 @@ C++11分科会第3回資料
 int main() {
     int a, b, c, d;
     int const unsigned ONE = 1;
-    const unsigned int TWE = 2;
+    const unsigned int TWO = 2;
     unsigned const int PI = 3;
     double number = 0.1;
 
