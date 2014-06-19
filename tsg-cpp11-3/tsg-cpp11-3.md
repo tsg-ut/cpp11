@@ -46,6 +46,8 @@ int main () {
 }
 ```
 
+decltypeは後で出てくる。
+
 結果
 
 ```
@@ -130,8 +132,8 @@ test.cpp:7:9: note: 'PI' was not declared 'constexpr'
          ^
 ```
 
-また、constexprおよびconstなマクロのみで生成されたconstはconstexprとなる。
-以下はコンパイルを通る。
+また、constexprおよびプリプロセス可能なマクロのみで生成されたconstはconstexprとなる。
+以下はたぶんコンパイルを通る。
 
 ```C++
 #include <iostream>
@@ -144,7 +146,7 @@ int main() {
     const double PI = ONE + TWO;
     constexpr double RADIUS_OF_CHIHAYA = CHIHAYA / (PI * 2);
 
-    std::cout << RADIUS_OF_CHIHAYA << std::endl;
+    std::cout << RADIUS_OF_CHIHAYA << std::endl; // -> 12
 
     return 0;
 }
@@ -152,5 +154,54 @@ int main() {
 
 ### constexpr関数
 
-constexprな値を生成する関数。constexpr内にはreturn文の1文のみが記述されていなければならない。
-また、returnする値は
+constexprな値を生成する関数。constexpr内には基本的にreturn文1文しか記述できない。厳しい。
+
+C++14でだいぶ緩和されるらしい。
+
+```C++
+#include <iostream>
+
+constexpr double RADIUS_OF(double CIRCLE) {
+    return CIRCLE / (3.14 * 2);
+}
+
+int main() {
+    constexpr double CHIRUNO = 9;
+
+    std::cout << RADIUS_OF(CHIRUNO) << std::endl; // -> 1.43312
+
+    return 0;
+}
+```
+
+constexprなコンストラクタなどもあるが、だいたいいっしょである。
+
+## auto (型指定子)
+
+初期化時に適当に型推論してくれる。初期化式を指定しないとコンパイルエラーになる。
+
+```C++
+#include <iostream>
+#include <vector>
+
+int main() {
+  auto integer = 10; // int
+  auto number = 1e3l; // long
+  auto character = 'a'; // char
+  auto pointer = &integer; // int *
+  const auto NOT_FOUND = 404; // const int
+
+  std::vector<std::string> vector;
+  auto iterator= vector.begin(); // std::vector<std::string>::iterator
+
+  return 0;
+}
+```
+
+## decltype (型指定子)
+
+括弧内に指定した式の型になる。よって、`auto variable = hogehoge;`とするのは
+`decltype(hogehoge) variable = hogehoge;`とするのとだいたい同じことである。(等価かどうかは知らない)
+
+```C++
+```
