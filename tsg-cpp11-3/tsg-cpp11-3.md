@@ -156,7 +156,7 @@ test.cpp:7:9: note: 'PI' was not declared 'constexpr'
          ^
 ```
 
-また、constexprおよびプリプロセス可能なマクロのみで生成されたconstはconstexprとなる。
+また、constexprおよび定数のみで生成されたconstはconstexprとなる。
 以下はたぶんコンパイルを通る。
 
 ```C++
