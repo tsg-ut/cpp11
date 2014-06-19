@@ -59,23 +59,47 @@ test.cpp:9:2: error: static assertion failed: x overflows... :(
 
 ## thread_local (指定子)
 
-マルチスレッド環境においてスレッドごとに一意な値を保持するらしい。マルチスレッドよくわからない。
+マルチスレッド環境においてスレッドごとに一意な値を保持する。
 
 ```C++
 #include <iostream>
 #include <thread>
+#include <string>
+#include <windows.h>
 
-thread_local double pi = 3;
+thread_local std::string name = "undefined";
 
-void correct_pi() { pi = 3.14; }
+void in_school() {
+    name = "Misumi Nagisa";
+    Sleep(2000);
+    std::cout << "She is " << name << "." << std::endl;
+}
+
+void in_battle() {
+    name = "Cure Black";
+    Sleep(1000);
+    std::cout << "She is " << name << "." << std::endl;
+}
 
 int main() {
-    std::thread thread(correct_pi);
-    thread.join(); // wait until thread terminates
+    std::thread school(in_school);
+    std::thread battle(in_battle);
 
-    std::cout << "pi is " << pi << std::endl; // -> pi is 3
+    school.join(); // wait until thread terminates
+    battle.join(); // wait until thread terminates
+
+    std::cout << "No, she is " << name << "." << std::endl;
     return 0;
 }
+```
+
+結果
+
+```
+C:\Users\hakatashi\Documents\GitHub\cpp11\tsg-cpp11-3>a
+She is Cure Black.
+She is Misumi Nagisa.
+No, she is undefined.
 ```
 
 ## constexpr (指定子)
@@ -185,16 +209,16 @@ constexprなコンストラクタなどもあるが、だいたいいっしょ�
 #include <vector>
 
 int main() {
-  auto integer = 10; // int
-  auto number = 1e3l; // long
-  auto character = 'a'; // char
-  auto pointer = &integer; // int *
-  const auto NOT_FOUND = 404; // const int
+    auto integer = 10; // int
+    auto number = 1e3l; // long
+    auto character = 'a'; // char
+    auto pointer = &integer; // int *
+    const auto NOT_FOUND = 404; // const int
 
-  std::vector<std::string> vector;
-  auto iterator= vector.begin(); // std::vector<std::string>::iterator
+    std::vector<std::string> vector;
+    auto iterator= vector.begin(); // std::vector<std::string>::iterator
 
-  return 0;
+    return 0;
 }
 ```
 
@@ -203,5 +227,8 @@ int main() {
 括弧内に指定した式の型になる。よって、`auto variable = hogehoge;`とするのは
 `decltype(hogehoge) variable = hogehoge;`とするのとだいたい同じことである。(等価かどうかは知らない)
 
-```C++
-```
+## 名前空間とか
+
+めぼしい新機能はない。
+
+## 属性(attribute)
