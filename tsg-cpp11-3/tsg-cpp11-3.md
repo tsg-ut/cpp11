@@ -208,15 +208,20 @@ constexprなコンストラクタなどもあるが、だいたいいっしょ�
 #include <iostream>
 #include <vector>
 
-int main() {
+iint main() {
     auto integer = 10; // int
-    auto number = 1e3l; // long
+    auto number = 1e3l; // long double
     auto character = 'a'; // char
-    auto pointer = &integer; // int *
-    const auto NOT_FOUND = 404; // const int
+	auto string = "blah"; // char const*
+    auto pointer = &integer; // int*
+    const auto NOT_FOUND = 404; // int const
 
-    std::vector<std::string> vector;
-    auto iterator= vector.begin(); // std::vector<std::string>::iterator
+    std::vector<std::string> vector(10, "hello");
+    auto iterator = vector.begin(); // std::vector<std::string>::iterator
+                                    // ...のはずがG++では
+                                    // __gnu_cxx::__normal_iterator<std::string*, std::vector<std::string, std::allocator<std::string> > >
+                                    // とかなんとかになる
+    auto first = *iterator; // std::string
 
     return 0;
 }
