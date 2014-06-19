@@ -275,3 +275,95 @@ int main() {
 ### deprecated属性
 
 deprecatedな関数、変数、クラスをマークする。G++は未対応の模様?
+
+[教科書](http://ezoeryou.github.io/cpp-book/C++11-Syntax-and-Feature.xhtml)を参考に
+
+```C++
+#include <stdio.h>
+
+[[ deprecated ]] char *gets(char * str);
+
+int main() {
+    char buf[1000];
+    gets(buf);
+}
+```
+
+# 宣言子
+
+## __func__
+
+C99では関数内で定数__func__を参照することにより関数名を得ることができる。
+C++11においてC++でもこれが使えるようになったが、その中身は実装依存とされ仕様上は特に何の意味もない。
+
+## default/delete定義
+
+ちょっとよくわかりませんでした＞＜
+
+## 初期化
+
+真新しいのはリスト初期化(uniform initialization, list initialization)くらいである。
+
+リスト初期化は、これまでリテラルごとに異なっていた初期化のシンタックスを統一するための記法で、波括弧を使って表現する。
+
+以下の3つの初期化は同一。
+
+```C++
+type variable = {value};
+type variable{value};
+type variable({value});
+```
+
+よって、例えば以下のように使える。
+
+```C++
+#include <iostream>
+#include <vector>
+
+int main() {
+    int number{3};
+    char string[]{'t', 'h', 'r', 'e', 'e'};
+    std::vector<double> vector{3, 3.0};
+
+    return 0;
+}
+```
+
+どういう原理で初期化が行われるかは煩雑なので省略するが、
+ここで使われている波括弧の初期化子を*初期化リスト*と呼び、初期化時以外にもいろいろと使うことができる。
+
+初期化リストはstd::initializer_listクラスで実現されており、これをコンストラクタの引数に取ると
+ユーザー定義のクラスでも同一の初期化記法を取ることができる。
+
+```C++
+#include <iostream>
+#include <initializer_list>
+#include <sstream>
+
+class magical_girls {
+    public:
+        std::string members;
+
+        magical_girls(std::initializer_list<std::string> girls) {
+            std::stringstream ss;
+
+            for (auto girl: girls) {
+                ss << girl << " ";
+            }
+
+            members = ss.str();
+        }
+};
+
+int main() {
+    magical_girls madomagi = {"madoka", "sayaka", "mami", "kyouko", "homura"};
+    magical_girls nanoha({"nanoha", "fate", "hayate"});
+    magical_girls iriya{"iriya", "miyu"};
+
+    std::cout << madomagi.members << std::endl; // -> madoka sayaka mami kyouko homura
+    std::cout << nanoha.members << std::endl; // -> nanoha fate hayate
+    std::cout << iriya.members << std::endl; // -> iriya miyu
+
+    return 0;
+}
+```
