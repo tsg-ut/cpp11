@@ -232,3 +232,46 @@ int main() {
 めぼしい新機能はない。
 
 ## 属性(attribute)
+
+属性は非常に汎用的な概念で、ソースコードに付加的な情報を加える。文法は角括弧2つを用いて`[[ attribute-list ]]`とする。
+
+### align属性
+
+変数を指定した数値の倍数のアドレスに配置することを強制するアライメントを実施する。
+
+`[[ align() ]]`で指定するとされていたが、`alignas()`と型指定子のように書くよう修正された。
+
+```C++
+#include <iostream>
+
+int main() {
+    alignas(0x1000) int hanshin = 334;
+
+    std::cout << &hanshin << std::endl; // -> 0x23a000
+
+    return 0;
+}
+```
+
+### noreturn属性
+
+関数がreturnしないことを明示する。使い所がよくわからない。
+
+関数がreturnしうる場合、コンパイラが警告を出す。
+
+```C++
+#include <iostream>
+
+void throw_error [[ noreturn ]] () {
+    throw "error";
+}
+
+int main() {
+    throw_error();
+    return 0;
+}
+```
+
+### deprecated属性
+
+deprecatedな関数、変数、クラスをマークする。G++は未対応の模様?
