@@ -225,9 +225,12 @@ int main(){
 ```
 
 \(実行結果\)
-> common init
-> init without argument
-> common init
+
+```
+common init
+init without argument
+common init
+```
 
 デリゲートコンストラクタと同時にメンバー初期化識別子を書くとコンパイルエラーになる。
 
@@ -386,7 +389,7 @@ int main(){
 
 \(実行結果\)
 
->
+```
 constructor new 0x7fbc7b403940 in main()
 constructor new 0x7fbc7b403d30 in foo()
 move assignment: delete 0x7fbc7b403940
@@ -401,6 +404,7 @@ move assignment: delete 0x7fbc7b404120
 destructor delete 0x7fbc7b403940
 destructor delete 0x0
 destructor delete 0x7fbc7b403d30
+```
 
 ### 4. コンストラクタの継承
 
