@@ -8,7 +8,7 @@
 - classは暗黙的にprivate
 - クラス名は直後から使える
 
-```cpp11
+```cpp
 class Foo {} *ptr = static_cast<Foo *>(nullptr);
 ```
 
@@ -56,7 +56,7 @@ class Foo {} *ptr = static_cast<Foo *>(nullptr);
 union、もしくは無名unionを直接のメンバーに持つクラスを、unionのようなクラス \(union-like class\) という。
 
 
-```cpp11
+```cpp
 union U{
 	std::vector<int> v;
 	std::string s;
@@ -69,7 +69,7 @@ int main(){
 
 これはコンパイル通らない。というのは、unionのようなクラスの共用メンバが非trivialなコンストラクター、コピーコンストラクター、ムーブコンストラクター、コピー代入演算子、ムーブ代入演算子、デストラクターを持っているとそれに対応するunionのメンバーが暗黙的にdeleteされるため。上の例のunionは明示的には
 
-```cpp11
+```cpp
 union U{
 	std::vector<int> v;
 	std::string s;
@@ -80,7 +80,7 @@ union U{
 
 となっている。
 
-```cpp11
+```cpp
 union U{
 	std::vector<int> v;
 	std::string s;
@@ -98,7 +98,7 @@ int main(){
 ## 派生クラス
 
 ###1. final 指定子
-```cpp11
+```cpp
 class Base {
 public:
 	virtual void foo() final {}
@@ -112,7 +112,7 @@ public:
 
 finalの指定された関数はオーバーライドできない。
 
-```cpp11
+```cpp
 class Base final {
 public:
 	int foo;
@@ -127,7 +127,7 @@ public:
 finalの指定されたクラスから派生することはできない。
 
 ### 2. override 指定子
-```cpp11
+```cpp
 class Base {
 	virtual int foobar(){}
 };
@@ -146,7 +146,7 @@ overrideを指定した関数は必ずオーバーライドしなければなら
 ### 1. 暗黙的にdeleteされる場合がある
 普通、明示的に特別なメンバ関数を指定しなければこれらは暗黙的に宣言される。しかし、ある条件下ではそれらがdeleteされるため注意が必要である。
 
-```cpp11
+```cpp
 class NonTrivial {
 	NonTrivial(); // ユーザー定義コンストラクタ
 };
@@ -167,11 +167,9 @@ class Bar {
 このようなケースはやや多く煩雑なため詳細は[12章 特別なメンバー関数 \(Special member functions\)]( http://ezoeryou.github.io/cpp-book/C++11-Syntax-and-Feature.xhtml#special )を参照のこと。
 
 ### 2. コンストラクタのデリゲート
-メンバー初期化識別子にクラス型を書くことでそのコンストラクタへ初期化処理をデリゲートすることができる。
-デリゲートするコンストラクタをデリゲートコンストラクタ、
-デリゲートされるコンストラクタをターゲットコンストラクタという。
+メンバー初期化識別子にクラス型を書くことでそのコンストラクタへ初期化処理をデリゲートすることができる。デリゲートするコンストラクタをデリゲートコンストラクタ、デリゲートされるコンストラクタをターゲットコンストラクタという。
 
-```cpp03
+```cpp
 class X
 {
 public :
@@ -190,7 +188,7 @@ public :
 
 これが
 
-```cpp11
+```cpp
 class X
 {
 public :
@@ -208,7 +206,7 @@ public :
 
 こうできる。
 
-```cpp11
+```cpp
 #include <iostream>
 using namespace std;
 
@@ -233,7 +231,7 @@ int main(){
 
 デリゲートコンストラクタと同時にメンバー初期化識別子を書くとコンパイルエラーになる。
 
-```cpp11
+```cpp
 class X {
 	int val
 public:
@@ -248,7 +246,7 @@ C++11の目玉機能のひとつ。
 #### 右辺値 \(rvalue\)
 type &&型で表される。右辺値とはリテラルや、非参照型の関数の戻り値などの
 
-```cpp11
+```cpp
 int &num = 1; // error
 // ok: const int &num = 1;
 ```
@@ -258,7 +256,7 @@ int &num = 1; // error
 #### 右辺値参照 \(rvalue reference\)
 今までの普通の参照を左辺値参照と呼ぶこともある。
 
-```cpp11
+```cpp
 int &a = pow(2,5);        // error: 右辺値(一時オブジェクト)は左辺値参照できない
 const int &b = pow(2,5); // ok: しかしbは変更不可
 b = pow(3,5);             // error
@@ -272,12 +270,16 @@ c = std::move(b);         // ok: ムーブ代入演算子。内部的にはキ�
 
 #### ムーブセマンティクス
 （コピー）コンストラクタで大変な処理をするクラスはできるだけコピーしたくない。
+
 　　　　　　　　　　↓
+
 大変な部分のデータはだいたいポインタや配列で保持しているから、そのポインタだけ受け渡すことでコピーのコストを削れないか？
+
 　　　　　　　　　　↓
+
 例えば後で定義するMyDataクラスを\(ユーザー定義ムーブ代入演算子をコメントアウトして\)使うと
 
-```cpp11
+```cpp
 MyData foo(){
 	MyData tmp;
 
@@ -292,18 +294,27 @@ int main(){
 ```
 
 MyDataは1KBくらい使い、コピーがもったいない。
+
 　　　　　　　　　　↓
+
 foo()から返ってきたMyData一時オブジェクトは代入の後すぐ用済みになるのだから、そのうちfoo().ptrだけを新しいオブジェクトのptr、つまり現在のx.ptrをdeleteしてfoo().ptrをそこに代入すればcopy()しないですむ。foo().ptrには代わりにnullptrを入れておけばdeleteされても何も起きないから、そちらがいつ消えようがxには関係がなくなる。
+
 　　　　　　　　　　↓
+
 要するに、右辺は破壊されるが高速に移動できるような仕組みがあれば性能の底上げにつながる。
 とはいえコピー代入時に右辺値が常に破壊されるのは困るので、コピー代入演算子では対応できない。\(破壊していいリテラルや関数の戻り値などの一時オブジェクトと、そうでない変数などの区別ができない\)
-　　　　　　　　　　↓
-　　　　　　＿人人人人人人人人＿ 
-　　　　　　＞　右辺値参照型　＜
-　　　　　　￣ＹＹＹＹＹＹＹＹ￣
-#### サンプル
 
-```cpp11
+　　　　　　　　　　↓
+
+　　　　　　＿人人人人人人人人＿ 
+
+　　　　　　＞　右辺値参照型　＜
+
+　　　　　　￣ＹＹＹＹＹＹＹＹ￣
+
+#### サンプルコード
+
+```cpp
 #include <iostream>
 #include <cstdio>
 #include <cmath>
@@ -393,7 +404,7 @@ destructor delete 0x7fbc7b403d30
 
 ### 4. コンストラクタの継承
 
-```cpp11
+```cpp
 class Base {
 public:
 	Base(int i){/* process */}
